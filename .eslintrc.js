@@ -13,6 +13,15 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+
+    // 'import/extensions': ['error', 'always', "ignorePackages", {
+    //   js: 'never',
+    //   mjs: 'never',
+    //   jsx: 'never',
+    //   ts: 'never',
+    //   tsx: 'never',
+    //   vue: 'never'
+    // }]
   },
   overrides: [
     {
@@ -25,4 +34,17 @@ module.exports = {
       },
     },
   ],
+
+  // "settings": {
+  //   "import/resolver": {
+  //     "import/extensions": [
+  //       ".js",
+  //       ".jsx",
+  //       ".mjs",
+  //       ".ts",
+  //       ".tsx",
+  //       ".vue"
+  //     ]
+  //   }
+  // }
 };

@@ -1,32 +1,53 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar app color="indigo" dark>
+      <v-toolbar-title class="app-name" @click="goHome">
+        Newsman
+      </v-toolbar-title>
+
+      <v-spacer></v-spacer>
+    </v-app-bar>
+
+    <v-main>
+      <router-view />
+    </v-main>
+    <the-footer />
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import TheFooter from '@/views/layouts/TheFooter.vue';
 
-#nav {
-  padding: 30px;
-}
+export default {
+  name: 'App',
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+  components: { TheFooter },
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+  data: () => ({
+    //
+  }),
+
+  methods: {
+    goHome() {
+      if (this.$router.currentRoute.path !== '') {
+        return this.$router.push('/').catch((err) => {
+          if (err.name !== 'NavigationDuplicated') {
+            console.log(err);
+          }
+        });
+      }
+      return {};
+    },
+  },
+
+  created() {
+    // return alert(this.$router.currentRoute.path);
+  },
+};
+</script>
+
+<style scoped>
+.app-name:hover {
+  cursor: pointer;
 }
 </style>

@@ -1,0 +1,48 @@
+:root {
+    --black: #24292e;
+    --white: #ffffff;
+
+    /* Text Sizes*/
+    --font-xs: 10px;
+    --font-sm: 12px;
+    --font-normal: 14px;
+    --font-md: 16px;
+    --font-lg: 20px;
+    --font-xl: 24px;
+}
+
+
+/* @media (prefers-color-scheme: dark)  {
+    --github-dark: var(--github-light);
+    --github-light: var(--github-dark);
+} */
+
+[data-theme='dark'] {
+    --github-dark: var(--github-light);
+    --github-light: var(--github-dark);
+}
+
+body,
+html {
+    scroll-behavior: smooth;
+    font-family: 'Helvetica', sans-serif;
+    color: var(--black);
+    /* font-size: var(--font-normal);
+    font-style: normal;
+    font-weight: normal; */
+    background-color: var(--white);
+}
+
+/* * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+} */
+
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+*:focus:not(:-moz-focusring) {
+    outline: none;
+}
