@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row class="mx-2">
-      <v-col v-for="x in 12" :key="x" cols="12" sm="6" md="4" lg="3" xl="2">
+      <v-col v-for="x in 36" :key="x" cols="12" sm="6" md="4" lg="3" xl="2">
         <v-hover>
           <template v-slot:default="{ hover }">
             <v-card
@@ -103,7 +103,8 @@ export default {
   methods: {
     getRandomInt() {
       const cardArr = [];
-      const length = 12;
+      // const length = 12;
+      const length = 36;
 
       while (cardArr.length < length) {
         const randomNumber = Math.floor(Math.random() * length) + 1;
@@ -111,9 +112,12 @@ export default {
       }
       // console.log(cardArr);
 
-      this.withBgImage = cardArr.slice(0, 6);
-      this.withBgIndigo = cardArr.slice(6, 8);
-      this.withDefault = cardArr.slice(8);
+      // this.withBgImage = cardArr.slice(0, 6);
+      this.withBgImage = cardArr.slice(0, 18);
+      // this.withBgIndigo = cardArr.slice(6, 8);
+      this.withBgIndigo = cardArr.slice(18, 24);
+      // this.withDefault = cardArr.slice(8);
+      this.withDefault = cardArr.slice(24);
     },
 
     hasBgImage(val) {

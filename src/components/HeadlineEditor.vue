@@ -25,16 +25,20 @@
       <v-text-field
         :disabled="!isEditing"
         color="white"
-        label="Name"
+        label="News Headline"
         @focus="onFocus = !onFocus"
+        @blur="onFocus = !onFocus"
         v-model="headline"
+        maxlegth="54"
       ></v-text-field>
 
-      <v-toolbar-title
-        class="font-weight-thin subtitle-2 red--text text--accent-4 ml-2"
-        v-if="onFocus"
-      >
-        You have 54 characters left to type.
+      <v-toolbar-title class="subtitle-2 red--text text--accent-4 ml-2">
+        <span v-if="onFocus && !headline"
+          >You need to write some text or close the modal.</span
+        >
+        <span v-if="onFocus && headline"
+          >You have {{ remainingText }} characters left to type.</span
+        >
       </v-toolbar-title>
     </v-card-text>
     <v-divider></v-divider>
@@ -62,6 +66,23 @@ export default {
       headline: '',
       message: 'The headline has been updated',
     };
+  },
+
+  computed: {
+    remainingText() {
+      return 54 - this.headline.length;
+    },
+  },
+
+  watch: {
+    // TODO: Restrict the leght of string
+    headline(val) {
+      if (val.length > 54) {
+        return val.slice(0, 54);
+      }
+
+      return val;
+    },
   },
 
   methods: {

@@ -47,22 +47,24 @@
 export default {
   name: 'TheFooter',
 
-  data: () => ({
-    icons: [
-      {
-        name: 'github',
-        route: 'github.com/MubarakSULAYMAN',
-      },
-      {
-        name: 'twitter',
-        route: 'twitter.com/mubaraksulayman',
-      },
-      {
-        name: 'linkedin',
-        route: 'linkedin.com/mubarak-sulayman-98052189',
-      },
-    ],
-  }),
+  data() {
+    return {
+      icons: [
+        {
+          name: 'github',
+          route: 'github.com/MubarakSULAYMAN',
+        },
+        {
+          name: 'twitter',
+          route: 'twitter.com/mubaraksulayman',
+        },
+        {
+          name: 'linkedin',
+          route: 'linkedin.com/mubarak-sulayman-98052189',
+        },
+      ],
+    };
+  },
 
   methods: {
     copyright() {

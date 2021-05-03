@@ -25,7 +25,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
         </template>
-        <span>Click to edit headline 😉</span>
+        <span>Edit headline, your way &#128521; &#129299;</span>
       </v-tooltip>
     </v-card-actions>
 
@@ -101,12 +101,12 @@ export default {
 }
 
 .news-image {
-  height: 400px;
+  height: 450px;
 }
 
 @media only screen and (max-width: 768px) {
   .news-image {
-    height: 200px;
+    height: 250px;
   }
 }
 </style>
