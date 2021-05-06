@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="text-center"> -->
   <v-menu
     offset-y
     open-on-hover
@@ -14,36 +13,35 @@
         v-bind="attrs"
         v-on="on"
       >
-        Specify News Source
+        News Source
       </v-btn>
     </template>
-    <v-list>
-      <v-list-item v-for="(item, index) in items" :key="index" link>
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
+
+    <v-list style="max-height: 300px" class="overflow-y-auto">
+      <v-list-item
+        v-for="source in newsSources"
+        :key="source.id"
+        link
+        @click="getSourceTopHeadlines(source.id)"
+      >
+        <v-list-item-title>{{ source.name }}</v-list-item-title>
       </v-list-item>
     </v-list>
 
-    <!-- <v-list>
-      <v-list-group
-        v-for="item in items"
-        :key="item.title"
-        v-model="item.active"
-        :prepend-icon="item.action"
-        no-action
-      >
-        <template v-slot:activator>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title"></v-list-item-title>
-          </v-list-item-content>
-        </template>
-
-        <v-list-item v-for="child in item.items" :key="child.title">
-          <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
-          </v-list-item-content>
+    <!-- FIXME: Width not customizable with virtual scroll -->
+    <!-- <v-card
+      elevation="16"
+      max-width="400"
+      class="mx-auto"
+    >
+    <v-virtual-scroll bench="0" :items="newsSources" :item-height="50" height="300" class="white">
+      <template v-slot:default="{ item }">
+        <v-list-item :key="item.id" link @click="getSourceTopHeadlines(item.id)">
+          <v-list-item-title>{{ item.name }}</v-list-item-title>
         </v-list-item>
-      </v-list-group>
-    </v-list> -->
+      </template>
+    </v-virtual-scroll>
+    </v-card> -->
   </v-menu>
   <!-- </div> -->
 </template>
@@ -55,22 +53,7 @@ export default {
   name: 'NewsHeadlinesFilter',
 
   data() {
-    return {
-      items: [
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me 2' },
-      ],
-
-      // items: [
-      //   {
-      //     action: 'mdi-ticket',
-      //     items: [{ title: 'List Item' }],
-      //     title: 'Attractions',
-      //   },
-      // ],
-    };
+    return {};
   },
 
   computed: {
@@ -78,11 +61,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getNewsSources']),
+    getSourceTopHeadlines(source) {
+      return this.$store.dispatch('getSourceTopHeadlines', source);
+    },
+
+    ...mapActions(['getNewsSources', 'getSourceTopHeadlines']),
   },
 
   created() {
-    return this.getNewsSources();
+    return this.$store.dispatch('getNewsSources');
   },
 };
 </script>

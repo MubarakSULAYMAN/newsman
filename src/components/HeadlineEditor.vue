@@ -28,23 +28,32 @@
         label="News Headline"
         @focus="onFocus = !onFocus"
         @blur="onFocus = !onFocus"
-        v-model="headline"
-        maxlegth="54"
+        type="text"
+        :value="headline"
+        @input="updateValue"
       ></v-text-field>
+      <!-- v-model="headline" -->
+      <!-- Try watch or key -->
 
       <v-toolbar-title class="subtitle-2 red--text text--accent-4 ml-2">
-        <span v-if="onFocus && !headline"
-          >You need to write some text or close the modal.</span
-        >
-        <span v-if="onFocus && headline"
-          >You have {{ remainingText }} characters left to type.</span
-        >
+        <span v-if="onFocus && !headline">
+          You need to write some text or close the modal.
+        </span>
+        <span v-if="onFocus && headline">
+          You have {{ remainingText }} characters left to type.
+        </span>
+        <span v-if="headline && maxLength">
+          You have {{ -1 * remainingText }} characters above allowed limit of
+          {{ allowedChar }}.
+        </span>
       </v-toolbar-title>
     </v-card-text>
     <v-divider></v-divider>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn :disabled="!isEditing" color="success" @click="save"> Save </v-btn>
+      <v-btn :disabled="!isEditing || maxLength" color="success" @click="save">
+        Save
+      </v-btn>
     </v-card-actions>
     <v-snackbar v-model="hasSaved" :timeout="500" absolute bottom left>
       {{ message }}
@@ -64,28 +73,47 @@ export default {
 
       onFocus: false,
       headline: '',
+      allowedChar: 54,
       message: 'The headline has been updated',
     };
   },
 
   computed: {
+    maxLength() {
+      return this.headline.length > this.allowedChar;
+    },
+
     remainingText() {
-      return 54 - this.headline.length;
+      return this.allowedChar - this.headline.length;
     },
   },
 
   watch: {
     // TODO: Restrict the leght of string
-    headline(val) {
-      if (val.length > 54) {
-        return val.slice(0, 54);
-      }
+    // headline(val) {
+    //   if (val.length > this.allowedChar) {
+    //     return val.slice(0, this.allowedChar);
+    //   }
 
-      return val;
-    },
+    //   return val;
+    // },
+
+    // item(newVal, lastVal) {
+    //   if (newVal > 10) this.item = 10
+    //   if (newVal < 1) this.item = 1
+    // }
   },
 
   methods: {
+    updateValue(event) {
+      const { value } = event.target;
+      console.log(value, this.headline);
+      if (String(value).length <= 10) {
+        this.headline = value;
+      }
+      this.$forceUpdate();
+    },
+
     updateOverlay() {
       this.$emit('overlayStatus');
     },
@@ -95,6 +123,7 @@ export default {
         this.hasSaved = true;
         this.message = 'New headline cannot be empty';
       } else {
+        this.$store.dispatch('updateSelectedHeadline', this.headline);
         this.isEditing = !this.isEditing;
         this.hasSaved = true;
         this.message = 'The headline has been updated';

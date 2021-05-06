@@ -1,31 +1,37 @@
 <template>
   <v-container fluid>
     <v-row class="mx-2">
-      <v-col v-for="x in 36" :key="x" cols="12" sm="6" md="4" lg="3" xl="2">
+      <v-col
+        v-for="(article, index) in articles"
+        :key="index"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+        xl="2"
+      >
         <v-hover>
           <template v-slot:default="{ hover }">
             <v-card
               height="300"
               dark
               :elevation="hover ? 12 : 3"
-              :loading="hover"
-              :style="backgroundImage(x, 'https://picsum.photos/200/300')"
+              :style="backgroundImage(index, article.urlToImage)"
               :class="[
-                hasBgColor(x),
-                cardProp(x) ? 'card' : '',
+                hasBgColor(index),
+                cardProp(index) ? 'card' : '',
                 'd-flex flex-column',
+                'headline-card',
               ]"
             >
-              <!-- FIXME: helli -->
-              <!-- TODO: helli -->
               <v-card-title class="mb-auto">
                 <v-spacer></v-spacer>
                 <v-icon
                   :class="[
                     'arrow-button',
-                    defaultProp(x) ? 'arrow-white' : 'arrow-indigo',
+                    defaultProp(index) ? 'arrow-white' : 'arrow-indigo',
                   ]"
-                  @click="openNews(x)"
+                  @click="openNews(article.title, article)"
                 >
                   mdi-arrow-right
                 </v-icon>
@@ -33,25 +39,26 @@
 
               <v-card-text class="text-area">
                 <v-row align="center" class="misc mx-0">
-                  <div :class="[defaultColor(x)]">Date</div>
+                  <div :class="[defaultColor(index), 'font-weight-bold']">
+                    {{ article.publishedAt | dateFormat }}
+                  </div>
                 </v-row>
 
                 <h3
                   :class="[
-                    customColor(x),
+                    customColor(index),
                     'headline my-4 title font-weight-bold text-capitalize',
                   ]"
                 >
-                  Headline -•- Source
+                  {{ article.title }} • {{ article.source.name }}
                 </h3>
 
-                <p :class="[defaultColor(x)]" v-if="!hasBgImage(x)">
-                  Small plates, salads & sandwiches - an intimate setting with
-                  12 indoor seats plus patio seating.
+                <p :class="[defaultColor(index)]" v-if="!hasBgImage(index)"
+                v-html="articleContent(article.title, article.content)">
                   <v-btn
                     text
-                    :class="[customColor(x), 'text-capitalize']"
-                    @click="openNews(x)"
+                    :class="[customColor(index), 'text-capitalize']"
+                    @click="openNews(article.title, article)"
                   >
                     Read More
                   </v-btn>
@@ -66,7 +73,9 @@
 </template>
 
 <script>
-// import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+// import dayjs from 'dayjs';
+// import { relativeTime, LocalizedFormat } from 'dayjs/plugin/relativeTime';
 
 export default {
   name: 'NewsHeadlines',
@@ -77,49 +86,11 @@ export default {
     };
   },
 
-  // inject: {
-  //   theme: {
-  //     default: { isDark: false },
-  //   },
-  // },
-
-  data() {
-    return {
-      // withBgImage: [2, 4, 5, 7, 10, 12],
-      withBgImage: [],
-      // withBgIndigo: [6, 8],
-      withBgIndigo: [],
-      // withDefault: [1, 3, 9, 11],
-      withDefault: [],
-    };
-  },
-
   computed: {
-    newsCategory() {
-      return 'News Category';
-    },
+    ...mapGetters(['articles', 'withBgImage', 'withBgIndigo', 'withBgDefault']),
   },
 
   methods: {
-    getRandomInt() {
-      const cardArr = [];
-      // const length = 12;
-      const length = 36;
-
-      while (cardArr.length < length) {
-        const randomNumber = Math.floor(Math.random() * length) + 1;
-        if (cardArr.indexOf(randomNumber) === -1) cardArr.push(randomNumber);
-      }
-      // console.log(cardArr);
-
-      // this.withBgImage = cardArr.slice(0, 6);
-      this.withBgImage = cardArr.slice(0, 18);
-      // this.withBgIndigo = cardArr.slice(6, 8);
-      this.withBgIndigo = cardArr.slice(18, 24);
-      // this.withDefault = cardArr.slice(8);
-      this.withDefault = cardArr.slice(24);
-    },
-
     hasBgImage(val) {
       return this.withBgImage.includes(val);
     },
@@ -135,8 +106,6 @@ export default {
       return 'white';
     },
 
-    // backgroundProps() {},
-
     backgroundImage(val, imageUrl) {
       if (this.hasBgImage(val)) {
         return {
@@ -147,38 +116,93 @@ export default {
     },
 
     defaultColor(val) {
-      if (this.withDefault.includes(val)) {
+      if (this.withBgDefault.includes(val)) {
         return 'grey--text';
       }
       return 'white--text';
     },
 
     customColor(val) {
-      if (this.withDefault.includes(val)) {
+      if (this.withBgDefault.includes(val)) {
         return 'indigo--text text--darken-1';
       }
       return 'white--text';
     },
 
     defaultProp(val) {
-      return this.withDefault.includes(val);
+      return this.withBgDefault.includes(val);
     },
 
     cardProp(val) {
       return this.hasBgImage(val);
     },
 
-    openNews(headline) {
-      this.$router.push(`/news/${headline}`);
-      // this.updateSelectedNewsHeadline(headline);
+    // openNews(headline, article) {
+    //   // TODO: Introduce a mixin here and related headlines
+    //   let url = headline;
+    //   const punctuations = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
+
+    //   if (!url) {
+    //     url = null;
+    //   }
+
+    //   if (url.length > 2083) {
+    //     url = url
+    //       .toLowerCase()
+    //       .slice(0, 2083)
+    //       .replace(punctuations, '+')
+    //       .replace(/\s/g, '-');
+    //   }
+
+    //   url = url.toLowerCase().replace(punctuations, '+').replace(/\s/g, '-');
+
+    //   this.$router.push(`/news/${url}`);
+    //   this.$store.dispatch('updateSelectedNews', article);
+    // },
+
+    articleContent(title, content) {
+      if (title.length > 60 && title.length <= 90) {
+        return `${content.slice(0, 100)}...`;
+      }
+
+      if (title.length > 90 && title.length <= 120) {
+        return `${content.slice(0, 60)}...`;
+      }
+
+      if (title.length > 120 && content.length <= 120) {
+        return '';
+      }
+
+      if (title.length <= 120 && content.length > 120) {
+        return `${content.slice(0, 120)}...`;
+      }
+
+      return content;
     },
 
-    // ...mapActions(['updateSelectedNewsHeadline']),
+    ...mapActions(['getTopHeadlines', 'updateSelectedNews']),
   },
 
   created() {
-    return this.getRandomInt();
+    this.$store.dispatch('getTopHeadlines');
   },
+
+  // filters: {
+  //   diffForHumans(date) {
+  //     if (!date) {
+  //       return null;
+  //     }
+
+  //     // TODO: Add Time to now feature
+  //     // const today = new Date().toLocaleDateString();
+
+  //     // if (dayjs(date).format('DD/MM/YYYY') < today) {
+  //     //   return dayjs(date).fromNow();
+  //     // }
+
+  //     return dayjs(date).format('DD.MM.YYYY');
+  //   },
+  // },
 };
 </script>
 
@@ -188,6 +212,19 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.headline-card {
+  overflow: none;
+  border: 1px solid none;
+}
+
+/* TODO: Replace with border image with radius */
+.headline-card:hover {
+  border-top-color: #304ffe;
+  border-right-color: #5c6bc0;
+  border-bottom-color: #3f51b5;
+  border-left-color: #1a237e;
 }
 
 .arrow-button {

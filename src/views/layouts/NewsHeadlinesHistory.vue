@@ -5,6 +5,9 @@
       <!-- FIXME: Tooltip compatibity with v-sheet -->
       <!-- <v-tooltip right> -->
       <template v-slot:activator="{ on, attrs }">
+        <!-- fixed
+          bottom
+          left -->
         <v-btn
           elevation="2"
           fab
@@ -12,9 +15,6 @@
           rounded
           color="indigo accent-4"
           small
-          fixed
-          bottom
-          left
           dark
           v-bind="attrs"
           v-on="on"
@@ -32,19 +32,21 @@
       </v-sheet>
 
       <v-list>
-        <v-subheader class="body-1 indigo--text text--darken-4">History</v-subheader>
+        <v-subheader class="body-1 indigo--text text--darken-4"
+          >History</v-subheader
+        >
 
         <v-list-item
-          v-for="tile in tiles"
-          :key="tile.title"
+          v-for="article in readNews"
+          :key="article.title"
           @click="sheet = false"
         >
           <v-row class="">
-            <v-col cols="1">
+            <!-- <v-col cols="1">
               <v-list-item-title>Time</v-list-item-title>
-            </v-col>
+            </v-col> -->
             <v-col cols="11">
-              <v-list-item-title>{{ tile.title }}</v-list-item-title>
+              <v-list-item-title>{{ article.title }} • {{ article.source.name }}</v-list-item-title>
             </v-col>
           </v-row>
           <!-- </v-container> -->
@@ -55,20 +57,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'NewsHeadlinesHistory',
 
   data() {
     return {
       sheet: false,
-      tiles: [
-        { img: 'keep.png', title: 'Keep' },
-        { img: 'inbox.png', title: 'Inbox' },
-        { img: 'hangouts.png', title: 'Hangouts' },
-        { img: 'messenger.png', title: 'Messenger' },
-        { img: 'google.png', title: 'Google+' },
-      ],
     };
+  },
+
+  computed: {
+    ...mapGetters(['readNews']),
   },
 };
 </script>

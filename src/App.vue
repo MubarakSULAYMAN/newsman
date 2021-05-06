@@ -12,27 +12,33 @@
         class="mx-4"
         flat
         hide-details
-        label="Search"
+        label="Search a news or article by keyword(s)"
         prepend-inner-icon="mdi-magnify"
         solo-inverted
         clearable
         clear-icon="mdi-close-circle"
-        v-model="searchText"
+        @input="isTyping = true"
+        v-model="searchQuery"
+        placeholder="Type your keyword"
       ></v-text-field>
     </v-app-bar>
 
     <v-main>
       <router-view />
 
-      <news-headlines-history class="fab-item" />
+      <div
+        class="button-grp d-flex flex-column align-start justify-center ml-1"
+      >
+        <error-simulator class="mb-2" />
+        <news-headlines-history class="mt-2" />
+      </div>
 
-      <error-simulator class="fab-item" />
+      <jump-to-top />
 
       <error-notification />
-
       <error-loader />
     </v-main>
-    <the-footer />
+    <the-footer class="mt-24" />
   </v-app>
 </template>
 
@@ -42,7 +48,7 @@ import NewsHeadlinesHistory from '@/views/layouts/NewsHeadlinesHistory.vue';
 import ErrorSimulator from '@/views/layouts/ErrorSimulator.vue';
 import ErrorNotification from '@/views/layouts/ErrorNotification.vue';
 import ErrorLoader from '@/views/layouts/ErrorLoader.vue';
-// import api from '@/utils/services/RequestService';
+import JumpToTop from './views/layouts/JumpToTop.vue';
 
 export default {
   name: 'App',
@@ -53,18 +59,29 @@ export default {
     ErrorSimulator,
     ErrorNotification,
     ErrorLoader,
+    JumpToTop,
   },
 
   data() {
     return {
-      searchText: '',
-      // buttonState: {},
+      searchQuery: '',
+      isTyping: false,
+      // vuex
+      isLoading: false,
     };
   },
 
-  // computed: {
+  watch: {
+    // searchQuery: _.debounce(() => {
+    //   this.isTyping = false;
+    // }, 1000),
 
-  // },
+    isTyping(value) {
+      if (!value) {
+        this.searchUser(this.searchQuery);
+      }
+    },
+  },
 
   methods: {
     goHome() {
@@ -77,11 +94,31 @@ export default {
       }
       return {};
     },
-  },
 
-  created() {
-    // return alert(this.$router.currentRoute.path);
-    // return api.simulateError();
+    // TODO: Conditionally render history and error button
+    onScroll(e) {
+      if (typeof window === 'undefined') return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      const windowSize = window.innerHeight + Math.ceil(window.pageYOffset);
+      let tolerance;
+
+      if (['xs', 'sm'].includes(this.$vuetify.breakpoint.name)) {
+        tolerance = 120;
+      } else tolerance = 100;
+
+      const bottom = windowSize + tolerance >= document.body.offsetHeight;
+
+      this.fab = top > 20 && !bottom;
+    },
+
+    // searchUser(searchQuery) {
+    // this.isLoading = true;
+    //   // axios.get(`https://api.github.com/search/users?q=${searchQuery}`)
+    //   //   .then((response) => {
+    //   //   this.isLoading = false;
+    //   //     this.searchResult = response.data.items;
+    //   //   });
+    // },
   },
 };
 </script>
@@ -91,8 +128,9 @@ export default {
   cursor: pointer;
 }
 
-/* .fab-item {
+.button-grp {
   position: fixed;
-  top: 30vh !important;
-} */
+  top: 70vh !important;
+  z-index: 5;
+}
 </style>

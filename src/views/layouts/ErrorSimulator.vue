@@ -1,7 +1,10 @@
 <template>
   <div class="">
-    <v-tooltip left>
+    <v-tooltip right>
       <template v-slot:activator="{ on, attrs }">
+          <!-- fixed
+          bottom
+          right -->
         <v-btn
           elevation="2"
           fab
@@ -9,9 +12,6 @@
           rounded
           color="red accent-4"
           small
-          fixed
-          bottom
-          right
           dark
           v-bind="attrs"
           v-on="on"
@@ -31,26 +31,9 @@ import { mapActions } from 'vuex';
 export default {
   name: 'ErrorSimulator',
 
-  data() {
-    return {
-      // alert: false,
-    };
-  },
-
-  //   watch: {
-  //     dialog(val) {
-  //       if (!val) return;
-
-  //       setTimeout(function () {
-  //         this.dialog = false;
-  //       }, 4000);
-  //     },
-  //   },
-
   methods: {
     simulateError() {
-      return this.simulateErrorState();
-      // alert('Hello');
+      return this.$store.dispatch('simulateErrorState');
     },
 
     ...mapActions(['simulateErrorState']),

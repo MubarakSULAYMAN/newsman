@@ -1,5 +1,5 @@
 <template>
-  <v-container class="error-loader rounded-lg elevation-24" v-if="errorLoading">
+  <v-container class="error-loader rounded-lg elevation-24" v-if="isErrorLoading">
     <v-row class="fill-height" align-content="center" justify="center">
       <v-col class="subtitle-1 text-center" cols="12">
         Getting your request done
@@ -23,7 +23,7 @@ export default {
   name: 'ErrorLoader',
 
   computed: {
-    ...mapGetters(['errorLoading']),
+    ...mapGetters(['isErrorLoading']),
   },
 };
 </script>

@@ -15,6 +15,7 @@
 <script>
 import SelectedNews from '@/components/SelectedNews.vue';
 import RelatedHeadlines from '@/components/RelatedHeadlines.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'NewsDetails',
@@ -23,7 +24,7 @@ export default {
 
   metaInfo() {
     return {
-      titleTemplate: `Newsman(${this.newsCategory}) - ${this.newsHeadline}`,
+      titleTemplate: `Newsman(${this.selectedNews.title}) - ${this.selectedNews.source.name}`,
     };
   },
 
@@ -34,6 +35,10 @@ export default {
       }
       return 'ma-2 ml-0';
     },
+  },
+
+  computed: {
+    ...mapGetters(['selectedNews']),
   },
 };
 </script>

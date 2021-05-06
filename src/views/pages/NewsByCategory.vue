@@ -8,12 +8,6 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'NewsDetails',
 
-  metaInfo() {
-    return {
-      titleTemplate: `Newsman - ${this.newsCategory}`,
-    };
-  },
-
   computed: {
     ...mapGetters(['newsHeadline']),
 

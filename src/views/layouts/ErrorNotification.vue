@@ -1,6 +1,7 @@
 <template>
+<!-- TODO: Consider using errorInfo to have a more concise and precise notofocation. -->
   <v-alert
-    :value="alert"
+    :value="isError"
     border="left"
     dismissible
     elevation="24"
@@ -9,6 +10,7 @@
     transition="fab-transition"
     class="error-notification"
   >
+    {{ errorInfo }} <br />
     {{ errorMessage }}
   </v-alert>
 </template>
@@ -19,15 +21,8 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'ErrorNotification',
 
-  data() {
-    return {
-      // errorMessage: "I'm an Alert Usage Example",
-      // alert: false,
-    };
-  },
-
   computed: {
-    ...mapGetters(['alert', 'errorMessage']),
+    ...mapGetters(['isError', 'errorMessage', 'errorInfo']),
   },
 };
 </script>

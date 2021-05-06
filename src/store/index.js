@@ -1,31 +1,47 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import api from '../utils/services/RequestService';
+import topHeadlines from '@/store/modules/topHeadlines';
+import api from '@/utils/services/RequestService';
 
 Vue.use(Vuex);
 
+// Reduce into modules
 export default new Vuex.Store({
   state: {
-    // currentNewsHeadline: 'Missing Current News Headline',
-    selectedNewsHeadline: 'Missing News Headline',
-    selectedNewsCategory: 'Missing News Category',
+    withBgImage: [],
+    withBgIndigo: [],
+    withBgDefault: [],
+    selectedNews: {},
     isError: false,
     isErrorLoading: false,
-    isErrorMessage: 'Error message expected Here.',
-    currentNewsSources: [],
+    errorMessage: 'Error message expected Here.',
+    errorInfo: '',
+    newsSources: [],
+    SourceTopHeadlines: [],
+    articles: [],
+    readNews: [],
+    selectedHeadline: '',
   },
 
   mutations: {
-    // CURRENT_NEWS_HEADLINE(state, data) {
-    //   state.currentNewsHeadline = data;
-    // },
-
-    SET_SELECTED_NEWS_HEADLINE(state, data) {
-      state.selectedNewsHeadline = data;
+    SET_WITH_BG_IMAGE(state, arr) {
+      state.withBgImage = arr;
     },
 
-    SET_SELECTED_NEWS_CATEGORY(state, data) {
-      state.selectedNewsCategory = data;
+    SET_WITH_BG_INDIGO(state, arr) {
+      state.withBgIndigo = arr;
+    },
+
+    SET_WITH_BG_DEFAULT(state, arr) {
+      state.withBgDefault = arr;
+    },
+
+    SET_SELECTED_NEWS(state, data) {
+      state.selectedNews = data;
+    },
+
+    SET_READ_NEWS(state, data) {
+      state.readNews.unshift(data);
     },
 
     SET_ERROR_STATE(state, bool) {
@@ -37,83 +53,174 @@ export default new Vuex.Store({
     },
 
     SET_ERROR_MESSAGE(state, message) {
-      state.isErrorMessage = message;
+      state.errorMessage = message;
+    },
+
+    SET_ERROR_INFO(state, info) {
+      state.errorInfo = info;
     },
 
     SET_NEWS_SOURCES(state, sources) {
-      state.currentNewsSources = sources;
+      state.newsSources = sources;
+    },
+
+    SET_SOURCE_TOP_HEADLINES(state, sources) {
+      state.newsSources = sources;
+    },
+
+    SET_TOP_HEADLINES_ARTICLES(state, articles) {
+      state.articles = articles;
+    },
+
+    SET_SELECTED_HEADLINE(state, title) {
+      state.selectedHeadline = title;
     },
   },
 
   actions: {
-    updateSelectedNewsHeadline({ commit }, headline) {
-      commit('SET_SELECTED_NEWS_HEADLINE', headline);
+    getRandomInt({ state, commit }) {
+      const cardArr = [];
+      const arrLength = state.articles.length;
+
+      while (cardArr.length < arrLength) {
+        const randomNumber = Math.floor(Math.random() * arrLength);
+        if (cardArr.indexOf(randomNumber) === -1) cardArr.push(randomNumber);
+      }
+
+      const a = Math.floor((6 / 12) * arrLength);
+      commit('SET_WITH_BG_IMAGE', cardArr.slice(0, a));
+
+      const b = Math.floor((8 / 12) * arrLength);
+      commit('SET_WITH_BG_INDIGO', cardArr.slice(a, b));
+
+      commit('SET_WITH_BG_DEFAULT', cardArr.slice(b));
     },
 
-    updateSelectedNewsCategory({ commit }, category) {
-      commit('SET_SELECTED_NEWS_CATEGORY', category);
+    errorStatus({ commit }, errorState) {
+      let errorMessage = 'An error just occured!';
+      switch (errorState) {
+        case 400:
+          errorMessage = 'We are having problem in processing your request.';
+          break;
+        case 401:
+          errorMessage = 'Request not allowed, kindly register to proceed.';
+          break;
+        case 429:
+          errorMessage = 'We suspect you are robot and temporarily barred for a day.';
+          break;
+        case 500:
+          errorMessage = 'Apologies, we are working to resolve this issue.';
+          break;
+        default:
+          errorMessage = 'An error just occured, kindly contact us for help.';
+      }
+
+      commit('SET_ERROR_MESSAGE', errorMessage);
     },
 
-    async simulateErrorState({ commit }) {
+    updateSelectedNews({ commit, state }, article) {
+      commit('SET_SELECTED_NEWS', article);
+      commit('SET_SELECTED_HEADLINE', state.article.title);
+      commit('SET_READ_NEWS', article);
+    },
+
+    updateSelectedHeadline({ commit }, newHeadline) {
+      commit('SET_SELECTED_HEADLINE', newHeadline);
+    },
+
+    async simulateErrorState({ commit, dispatch }) {
       try {
         commit('SET_ERROR_LOADING', true);
         await api.simulateError();
       } catch (e) {
-        console.log(e);
         commit('SET_ERROR_LOADING', false);
-        commit('SET_ERROR_MESSAGE', 'Request not allowed, register to continue.');
+        dispatch('errorStatus', e.response.request.status);
         commit('SET_ERROR_STATE', true);
       }
 
       setTimeout(() => {
         commit('SET_ERROR_STATE', false);
-      }, 2500);
+      }, 5000);
     },
 
-    async getNewsSources({ commit }) {
+    async getNewsSources({ commit, dispatch }) {
       try {
-        // commit('SET_ERROR_LOADING', true);
         const response = await api.getSources();
-        console.log(response);
+
+        if ([200, 201].includes(response.status)) {
+          commit('SET_NEWS_SOURCES', response.data.sources);
+        }
       } catch (e) {
-        console.log(e);
-        // commit('SET_ERROR_LOADING', false);
-        // commit('SET_ERROR_MESSAGE', 'Request not allowed, register to continue.');
-        // commit('SET_ERROR_STATE', true);
+        // TODO: Check if precise message is better than general error state message
+        commit('SET_ERROR_INFO', 'Unable to load news sources.');
+        dispatch('errorStatus', e.response.request.status);
+        commit('SET_ERROR_STATE', true);
       }
 
       setTimeout(() => {
         commit('SET_ERROR_STATE', false);
-      }, 2500);
+      }, 5000);
+    },
+
+    async getSourceTopHeadlines({ commit, dispatch }, source) {
+      try {
+        const response = await api.getSourceTopHeadlines(source);
+
+        if ([200, 201].includes(response.status)) {
+          commit('SET_SOURCE_TOP_HEADLINES', response.data.sources);
+          commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
+          dispatch('getRandomInt');
+        }
+      } catch (e) {
+        // TODO: Check if precise message is better than general error state message
+        commit('SET_ERROR_INFO', 'Unable to load news sources.');
+        dispatch('errorStatus', e.response.request.status);
+        commit('SET_ERROR_STATE', true);
+      }
+
+      setTimeout(() => {
+        commit('SET_ERROR_STATE', false);
+      }, 5000);
+    },
+
+    async getTopHeadlines({ commit, dispatch }) {
+      try {
+        const response = await api.getTopHeadlines();
+
+        if ([200, 201].includes(response.status)) {
+          commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
+          dispatch('getRandomInt');
+        }
+      } catch (e) {
+        // TODO: Check if precise message is better than general error state message
+        commit('SET_ERROR_INFO', 'Unable to load top headlines.');
+        dispatch('errorStatus', e.response.request.status);
+        commit('SET_ERROR_STATE', true);
+      }
+
+      setTimeout(() => {
+        commit('SET_ERROR_STATE', false);
+      }, 5000);
     },
   },
 
   getters: {
-    newsHeadline(state) {
-      return state.selectedNewsHeadline;
-    },
-
-    newsCategory(state) {
-      return state.selectedNewsCategory;
-    },
-
-    alert(state) {
-      return state.isError;
-    },
-
-    errorLoading(state) {
-      return state.isErrorLoading;
-    },
-
-    errorMessage(state) {
-      return state.isErrorMessage;
-    },
-
-    newsSources(state) {
-      return state.currentNewsSources;
-    },
+    withBgImage: (state) => state.withBgImage,
+    withBgIndigo: (state) => state.withBgIndigo,
+    withBgDefault: (state) => state.withBgDefault,
+    selectedNews: (state) => state.selectedNews,
+    newsCategory: (state) => state.newsCategory,
+    isError: (state) => state.isError,
+    isErrorLoading: (state) => state.isErrorLoading,
+    errorMessage: (state) => state.errorMessage,
+    errorInfo: (state) => state.errorInfo,
+    newsSources: (state) => state.newsSources,
+    articles: (state) => state.articles,
+    readNews: (state) => state.readNews,
+    selectedHeadline: (state) => state.selectedHeadline,
   },
 
   modules: {
+    topHeadlines,
   },
 });
