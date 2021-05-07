@@ -6,7 +6,14 @@
       class="related-headline mb-6"
       dark
     >
-      <div class="d-flex flex-no-wrap justify-space-between">
+      <div class="d-flex flex-column flex-no-wrap justify-space-between">
+        <v-img
+          :src="article.urlToImage"
+          max-height="125"
+          :max-width="avatarSize()"
+          class="mt-2 mx-auto"
+        ></v-img>
+
         <div>
           <v-card-subtitle class="headline subtitle-1">
             {{ article.title }}
@@ -24,10 +31,6 @@
             </v-btn>
           </v-card-actions>
         </div>
-
-        <v-avatar class="ma-3" :size="avatarSize()" tile>
-          <v-img :src="article.urlToImage" max-height="125"></v-img>
-        </v-avatar>
       </div>
     </v-card>
   </v-container>
@@ -41,39 +44,18 @@ export default {
 
   methods: {
     avatarSize() {
+      let newSize;
+
       if (this.$vuetify.breakpoint.name === 'xl') {
-        return 125;
-      }
+        newSize = 300;
+      } else if (this.$vuetify.breakpoint.name === 'lg') {
+        newSize = 250;
+      } else if (this.$vuetify.breakpoint.name === 'lg') {
+        newSize = 200;
+      } else newSize = 180;
 
-      if (this.$vuetify.breakpoint.name === 'lg') {
-        return 110;
-      }
-
-      return 95;
+      return newSize;
     },
-
-    // openNews(headline, article) {
-    //   // TODO: Introduce a mixin here and news headline
-    //   let url = headline;
-    //   const punctuations = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
-
-    //   if (!url) {
-    //     url = null;
-    //   }
-
-    //   if (url.length > 2083) {
-    //     url = url
-    //       .toLowerCase()
-    //       .slice(0, 2083)
-    //       .replace(punctuations, '+')
-    //       .replace(/\s/g, '-');
-    //   }
-
-    //   url = url.toLowerCase().replace(punctuations, '+').replace(/\s/g, '-');
-
-    //   this.$router.push(`/news/${url}`);
-    //   this.$store.dispatch('updateSelectedNews', article);
-    // },
   },
 
   computed: {

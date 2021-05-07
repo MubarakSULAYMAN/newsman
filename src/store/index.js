@@ -19,6 +19,7 @@ export default new Vuex.Store({
     newsSources: [],
     SourceTopHeadlines: [],
     articles: [],
+    relatedArticles: [],
     readNews: [],
     selectedHeadline: '',
   },
@@ -72,6 +73,10 @@ export default new Vuex.Store({
       state.articles = articles;
     },
 
+    SET_TOP_HEADLINES_RELATED_ARTICLES(state, articles) {
+      state.relatedArticles = articles;
+    },
+
     SET_SELECTED_HEADLINE(state, title) {
       state.selectedHeadline = title;
     },
@@ -95,6 +100,8 @@ export default new Vuex.Store({
 
       commit('SET_WITH_BG_DEFAULT', cardArr.slice(b));
     },
+
+    // getRelatedArticles() {},
 
     errorStatus({ commit }, errorState) {
       let errorMessage = 'An error just occured!';
@@ -120,7 +127,7 @@ export default new Vuex.Store({
 
     updateSelectedNews({ commit, state }, article) {
       commit('SET_SELECTED_NEWS', article);
-      commit('SET_SELECTED_HEADLINE', state.article.title);
+      commit('SET_SELECTED_HEADLINE', state.selectedNews.title);
       commit('SET_READ_NEWS', article);
     },
 
@@ -167,9 +174,10 @@ export default new Vuex.Store({
         const response = await api.getSourceTopHeadlines(source);
 
         if ([200, 201].includes(response.status)) {
-          commit('SET_SOURCE_TOP_HEADLINES', response.data.sources);
+          // commit('SET_SOURCE_TOP_HEADLINES', response.data.sources);
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
+          await dispatch('getNewsSources');
         }
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
@@ -202,6 +210,27 @@ export default new Vuex.Store({
         commit('SET_ERROR_STATE', false);
       }, 5000);
     },
+
+    async getSearchArticle({ commit, dispatch }, keyword) {
+      try {
+        const response = await api.searchArticle(keyword);
+        // console.log(response);
+
+        if ([200, 201].includes(response.status)) {
+          commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
+          dispatch('getRandomInt');
+        }
+      } catch (e) {
+        // TODO: Check if precise message is better than general error state message
+        commit('SET_ERROR_INFO', 'Unable to load top headlines.');
+        dispatch('errorStatus', e.response.request.status);
+        commit('SET_ERROR_STATE', true);
+      }
+
+      setTimeout(() => {
+        commit('SET_ERROR_STATE', false);
+      }, 5000);
+    },
   },
 
   getters: {
@@ -216,6 +245,7 @@ export default new Vuex.Store({
     errorInfo: (state) => state.errorInfo,
     newsSources: (state) => state.newsSources,
     articles: (state) => state.articles,
+    relatedArticles: (state) => state.relatedArticles,
     readNews: (state) => state.readNews,
     selectedHeadline: (state) => state.selectedHeadline,
   },

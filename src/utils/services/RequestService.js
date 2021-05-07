@@ -12,7 +12,7 @@ const key = '099148be22804e849a0c6fe022b7cf5e';
 
 export default {
   searchArticle(keyword) {
-    return apiClient.get(`/everything?q=${keyword}&pageSize=72&apiKey=${key}`);
+    return apiClient.get(`/everything?q=${keyword}&pageSize=72&sortBy=popularity&apiKey=${key}`);
   },
 
   getSources() {

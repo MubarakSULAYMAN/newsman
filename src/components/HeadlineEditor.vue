@@ -29,20 +29,17 @@
         @focus="onFocus = !onFocus"
         @blur="onFocus = !onFocus"
         type="text"
-        :value="headline"
-        @input="updateValue"
+        v-model="headline"
       ></v-text-field>
-      <!-- v-model="headline" -->
-      <!-- Try watch or key -->
 
       <v-toolbar-title class="subtitle-2 red--text text--accent-4 ml-2">
         <span v-if="onFocus && !headline">
           You need to write some text or close the modal.
         </span>
-        <span v-if="onFocus && headline">
+        <span v-else-if="onFocus && headline">
           You have {{ remainingText }} characters left to type.
         </span>
-        <span v-if="headline && maxLength">
+        <span v-else-if="headline && maxLength">
           You have {{ -1 * remainingText }} characters above allowed limit of
           {{ allowedChar }}.
         </span>
@@ -88,40 +85,17 @@ export default {
     },
   },
 
-  watch: {
-    // TODO: Restrict the leght of string
-    // headline(val) {
-    //   if (val.length > this.allowedChar) {
-    //     return val.slice(0, this.allowedChar);
-    //   }
-
-    //   return val;
-    // },
-
-    // item(newVal, lastVal) {
-    //   if (newVal > 10) this.item = 10
-    //   if (newVal < 1) this.item = 1
-    // }
-  },
-
   methods: {
-    updateValue(event) {
-      const { value } = event.target;
-      console.log(value, this.headline);
-      if (String(value).length <= 10) {
-        this.headline = value;
-      }
-      this.$forceUpdate();
-    },
-
     updateOverlay() {
       this.$emit('overlayStatus');
     },
 
     save() {
       if (this.headline.length === 0) {
-        this.hasSaved = true;
+        // this.hasSaved = true;
         this.message = 'New headline cannot be empty';
+      } else if (this.headline.length > this.allowedChar) {
+        this.message = 'Unable to proceed with request due to length of text.';
       } else {
         this.$store.dispatch('updateSelectedHeadline', this.headline);
         this.isEditing = !this.isEditing;

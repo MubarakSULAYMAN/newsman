@@ -1,4 +1,5 @@
 <template>
+ <!-- absolute -->
   <v-footer dark padless class="mt-12">
     <v-card class="flex" flat tile>
       <v-card-title class="indigo" dark>

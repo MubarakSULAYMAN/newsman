@@ -1,13 +1,22 @@
 <template>
   <v-app>
     <v-app-bar app color="indigo" dark>
-      <v-toolbar-title class="app-name" @click="goHome">
-        Newsman
+      <v-toolbar-title class="app-name font-weight-black" @click="goHome">
+        <span v-if="isLargeScreen">Newsman</span>
+        <img
+          width="30"
+          height="30"
+          class="rounded-circle"
+          src="./../public/newsman_logo.png"
+          alt="Newsman Logo"
+          v-else
+        />
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <!-- TODO: Add search on keyup functionality with rebounce function -->
+      <!-- @input="isTyping = true" -->
       <v-text-field
         class="mx-4"
         flat
@@ -17,14 +26,14 @@
         solo-inverted
         clearable
         clear-icon="mdi-close-circle"
-        @input="isTyping = true"
         v-model="searchQuery"
         placeholder="Type your keyword"
+        @keyup="getArticle(searchQuery)"
       ></v-text-field>
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <router-view class="pb-10" />
 
       <div
         class="button-grp d-flex flex-column align-start justify-center ml-1"
@@ -37,8 +46,8 @@
 
       <error-notification />
       <error-loader />
+      <the-footer />
     </v-main>
-    <the-footer class="mt-24" />
   </v-app>
 </template>
 
@@ -68,7 +77,14 @@ export default {
       isTyping: false,
       // vuex
       isLoading: false,
+      debounce: null,
     };
+  },
+
+  computed: {
+    isLargeScreen() {
+      return ['md', 'lg', 'xl'].includes(this.$vuetify.breakpoint.name);
+    },
   },
 
   watch: {
@@ -119,6 +135,15 @@ export default {
     //   //     this.searchResult = response.data.items;
     //   //   });
     // },
+
+    getArticle(keyword) {
+      if (keyword) {
+        clearTimeout(this.debounce);
+        this.debounce = setTimeout(() => {
+          this.$store.dispatch('getSearchArticle', keyword);
+        }, 600);
+      }
+    },
   },
 };
 </script>

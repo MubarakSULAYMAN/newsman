@@ -3,7 +3,7 @@
     <v-row class="mx-2">
       <v-col
         v-for="(article, index) in articles"
-        :key="index"
+        :key="article.url"
         cols="12"
         sm="6"
         md="4"
@@ -13,7 +13,7 @@
         <v-hover>
           <template v-slot:default="{ hover }">
             <v-card
-              height="300"
+              height="350"
               dark
               :elevation="hover ? 12 : 3"
               :style="backgroundImage(index, article.urlToImage)"
@@ -40,21 +40,30 @@
               <v-card-text class="text-area">
                 <v-row align="center" class="misc mx-0">
                   <div :class="[defaultColor(index), 'font-weight-bold']">
-                    {{ article.publishedAt | dateFormat }}
+                    <span v-if="article.publishedAt !== null">
+                      {{ article.publishedAt | dateFormat }}
+                    </span>
+                    <span v-else>Unable to fetch Date</span>
                   </div>
                 </v-row>
 
                 <h3
                   :class="[
                     customColor(index),
-                    'headline my-4 title font-weight-bold text-capitalize',
+                    'my-4 title font-weight-bold text-capitalize',
                   ]"
                 >
-                  {{ article.title }} • {{ article.source.name }}
+                  {{ article.title || 'Unable to fetch Title' }}
                 </h3>
 
-                <p :class="[defaultColor(index)]" v-if="!hasBgImage(index)"
+                <p
+                  :class="[defaultColor(index)]"
+                  v-if="!hasBgImage(index)"
+                >
+                <span v-if="article.content !== null"
                 v-html="articleContent(article.title, article.content)">
+                </span>
+                <span v-else>Unable to fetch News Content</span>
                   <v-btn
                     text
                     :class="[customColor(index), 'text-capitalize']"
@@ -87,6 +96,30 @@ export default {
   },
 
   computed: {
+    // diplayClass() {
+    //   let classString = '';
+    //   switch (this.$vuetify.breakpoint.name) {
+    //     case 'xs':
+    //       classString = 'headline';
+    //       break;
+    //     case 'sm':
+    //       classString = 'display-1';
+    //       break;
+    //     case 'md':
+    //       classString = 'display-2';
+    //       break;
+    //     case 'lg':
+    //       classString = 'display-3';
+    //       break;
+    //     case 'xl':
+    //       classString = 'display-4';
+    //       break;
+    //     default:
+    //       classString = 'heading';
+    //   }
+    //   return classString;
+    // },
+
     ...mapGetters(['articles', 'withBgImage', 'withBgIndigo', 'withBgDefault']),
   },
 
@@ -137,47 +170,22 @@ export default {
       return this.hasBgImage(val);
     },
 
-    // openNews(headline, article) {
-    //   // TODO: Introduce a mixin here and related headlines
-    //   let url = headline;
-    //   const punctuations = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
-
-    //   if (!url) {
-    //     url = null;
-    //   }
-
-    //   if (url.length > 2083) {
-    //     url = url
-    //       .toLowerCase()
-    //       .slice(0, 2083)
-    //       .replace(punctuations, '+')
-    //       .replace(/\s/g, '-');
-    //   }
-
-    //   url = url.toLowerCase().replace(punctuations, '+').replace(/\s/g, '-');
-
-    //   this.$router.push(`/news/${url}`);
-    //   this.$store.dispatch('updateSelectedNews', article);
-    // },
-
     articleContent(title, content) {
-      if (title.length > 60 && title.length <= 90) {
-        return `${content.slice(0, 100)}...`;
-      }
+      let newContent = '';
 
-      if (title.length > 90 && title.length <= 120) {
-        return `${content.slice(0, 60)}...`;
+      if (title.length > 60 && title.length <= 80) {
+        newContent = `${content.slice(0, 100)}...`;
+      } else if (title.length > 80 && content.length <= 100) {
+        newContent = '';
+      } else if (title.length <= 80 && content.length > 80) {
+        newContent = `${content.slice(0, 80)}...`;
+      } else if (content === null) {
+        newContent = 'Unable to fetch Content';
       }
+      // TODO: Add a default response
+      // else newContent = content;
 
-      if (title.length > 120 && content.length <= 120) {
-        return '';
-      }
-
-      if (title.length <= 120 && content.length > 120) {
-        return `${content.slice(0, 120)}...`;
-      }
-
-      return content;
+      return newContent;
     },
 
     ...mapActions(['getTopHeadlines', 'updateSelectedNews']),

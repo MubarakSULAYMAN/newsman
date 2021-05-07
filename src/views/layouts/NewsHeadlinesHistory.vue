@@ -1,7 +1,6 @@
 <template>
   <div class="text-center">
-    <v-bottom-sheet v-model="sheet" persistent>
-      <!-- TODO: Tooltip not working -->
+    <v-bottom-sheet v-model="sheet">
       <!-- FIXME: Tooltip compatibity with v-sheet -->
       <!-- <v-tooltip right> -->
       <template v-slot:activator="{ on, attrs }">
@@ -22,21 +21,31 @@
           <v-icon>mdi-history</v-icon>
         </v-btn>
       </template>
-      <!-- <span>Let me help you with your history &#129488; &#128519;</span>
-      </v-tooltip> -->
-
-      <v-sheet class="text-center">
-        <v-btn class="mt-6" text color="red accent-4" @click="sheet = !sheet">
-          close
-        </v-btn>
-      </v-sheet>
 
       <v-list>
-        <v-subheader class="body-1 indigo--text text--darken-4"
-          >History</v-subheader
-        >
+        <div class="d-flex flex-row justify-space-between align-center px-6">
+          <v-subheader
+            class="body-1 indigo--text text--darken-4 font-weight-black"
+          >
+            <v-icon color="indigo darken-4" class="mr-2"
+              >mdi-clock-time-three-outline</v-icon
+            >
+            History
+          </v-subheader>
+          <v-spacer />
+          <v-icon color="red accent-4" @click="emptyHistory"
+            >mdi-delete-empty</v-icon
+          >
+        </div>
+
+        <v-list-item v-if="readNews.length === 0">
+          <v-subheader class="body-1 red--text text--darken-4 font-weight-bold">
+            No history
+          </v-subheader>
+        </v-list-item>
 
         <v-list-item
+          v-else
           v-for="article in readNews"
           :key="article.title"
           @click="sheet = false"
@@ -46,7 +55,10 @@
               <v-list-item-title>Time</v-list-item-title>
             </v-col> -->
             <v-col cols="11">
-              <v-list-item-title>{{ article.title }} • {{ article.source.name }}</v-list-item-title>
+              <v-list-item-title
+                >{{ article.title }} •
+                {{ article.source.name }}</v-list-item-title
+              >
             </v-col>
           </v-row>
           <!-- </v-container> -->
@@ -66,6 +78,12 @@ export default {
     return {
       sheet: false,
     };
+  },
+
+  methods: {
+    emptyHistory() {
+      this.readNews.length = 0;
+    },
   },
 
   computed: {

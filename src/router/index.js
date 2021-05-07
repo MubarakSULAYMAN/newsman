@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
-import NewsByCategory from '../views/pages/NewsByCategory.vue';
+// import NewsByCategory from '../components/NewsByCategory.vue';
 import NewsDetails from '../views/pages/NewsDetails.vue';
 
 Vue.use(VueRouter);
@@ -19,11 +19,11 @@ const routes = [
     redirect: '/',
   },
 
-  {
-    path: '/news/category/:newsCategory',
-    name: 'NewsByCategory',
-    component: NewsByCategory,
-  },
+  // {
+  //   path: '/news/category/:newsCategory',
+  //   name: 'NewsByCategory',
+  //   component: NewsByCategory,
+  // },
 
   {
     path: '/news/:newsHeadline',

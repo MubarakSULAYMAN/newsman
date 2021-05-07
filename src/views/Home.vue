@@ -9,12 +9,12 @@
 
     <h5
       class="headline text-center indigo--text text--darken-1 font-weight-black"
-      v-if="articles"
+      v-if="!articles"
     >
       You may need a refresh. <br />
       If issue persist, kindly contact us.
     </h5>
-    <news-headlines v-if="!articles" />
+    <news-headlines v-if="articles" />
   </div>
 </template>
 

@@ -17,7 +17,6 @@
       v-if="!isArticleEmpty(selectedNews)"
     >
       <v-img class="news-image" :src="selectedNews.urlToImage"></v-img>
-      <!-- {{ selectedNews }} -->
 
       <v-card-title class="caption">{{ selectedHeadline }}</v-card-title>
 
@@ -70,23 +69,20 @@
         <div>
           <span v-html="selectedNews.content"></span>
 
-          <!-- <v-btn
+          <v-btn
             class="mx-4"
             dark
             icon
             :href="selectedNews.url"
             target="_blank"
             rel="noopener noreferrer"
-          > -->
+          >
           <v-icon
             size="24px"
             color="indigo darken-1"
-            :href="selectedNews.url"
-            target="_blank"
-            rel="noopener noreferrer"
             >mdi-open-in-new</v-icon
           >
-          <!-- </v-btn> -->
+          </v-btn>
         </div>
       </v-card-text>
     </v-card>
