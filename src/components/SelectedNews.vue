@@ -16,7 +16,11 @@
       class="selected-news mx-auto"
       v-if="!isArticleEmpty(selectedNews)"
     >
-      <v-img class="news-image" :src="selectedNews.urlToImage"></v-img>
+      <v-img
+        class="news-image"
+        :src="selectedNews.urlToImage"
+        :alt="selectedNews.title"
+      ></v-img>
 
       <v-card-title class="caption">{{ selectedHeadline }}</v-card-title>
 
@@ -77,11 +81,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-          <v-icon
-            size="24px"
-            color="indigo darken-1"
-            >mdi-open-in-new</v-icon
-          >
+            <v-icon size="24px" color="indigo darken-1">mdi-open-in-new</v-icon>
           </v-btn>
         </div>
       </v-card-text>

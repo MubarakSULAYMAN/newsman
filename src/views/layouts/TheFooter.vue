@@ -26,7 +26,7 @@
       </v-card-title>
 
       <v-card-text class="py-2 indigo white--text text-center">
-        &copy; {{ copyright() }} —
+        &copy; {{ copyright }} —
         <strong>
           <v-btn
             href="http://github.com/MubarakSULAYMAN/newsman"
@@ -67,12 +67,12 @@ export default {
     };
   },
 
-  methods: {
+  computed: {
     copyright() {
       if (new Date().getFullYear() > 2021) {
         return `2021 - ${new Date().getFullYear()}`;
       }
-      return new Date().getFullYear();
+      return `${new Date().getFullYear()} - PRESENT`;
     },
   },
 };

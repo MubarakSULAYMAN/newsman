@@ -5,7 +5,7 @@
         <selected-news class="selected-news" />
       </v-col>
 
-      <v-col cols="0" md="3" class="related-news mt-3 px-6">
+      <v-col cols="12" md="3" class="related-news mt-3 px-6">
         <related-headlines />
       </v-col>
     </v-row>
@@ -46,11 +46,5 @@ export default {
 <style scoped>
 .selected-news {
   width: 100%;
-}
-
-@media only screen and (max-width: 958px) {
-  .related-news {
-    display: none;
-  }
 }
 </style>

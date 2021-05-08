@@ -188,29 +188,12 @@ export default {
       return newContent;
     },
 
-    ...mapActions(['getTopHeadlines', 'updateSelectedNews']),
+    ...mapActions(['getTopHeadlines']),
   },
 
   created() {
-    this.$store.dispatch('getTopHeadlines');
+    this.getTopHeadlines();
   },
-
-  // filters: {
-  //   diffForHumans(date) {
-  //     if (!date) {
-  //       return null;
-  //     }
-
-  //     // TODO: Add Time to now feature
-  //     // const today = new Date().toLocaleDateString();
-
-  //     // if (dayjs(date).format('DD/MM/YYYY') < today) {
-  //     //   return dayjs(date).fromNow();
-  //     // }
-
-  //     return dayjs(date).format('DD.MM.YYYY');
-  //   },
-  // },
 };
 </script>
 

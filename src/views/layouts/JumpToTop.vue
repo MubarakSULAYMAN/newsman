@@ -35,7 +35,7 @@ export default {
 
       const bottom = windowSize + tolerance >= document.body.offsetHeight;
 
-      this.fab = top > 20 && !bottom;
+      this.fab = top > 50 && !bottom;
     },
 
     toTop() {

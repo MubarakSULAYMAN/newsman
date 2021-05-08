@@ -5,7 +5,7 @@ import api from '@/utils/services/RequestService';
 
 Vue.use(Vuex);
 
-// Reduce into modules
+// TODO: Reduce into modules
 export default new Vuex.Store({
   state: {
     withBgImage: [],
@@ -13,6 +13,7 @@ export default new Vuex.Store({
     withBgDefault: [],
     selectedNews: {},
     isError: false,
+    errorType: 'error',
     isErrorLoading: false,
     errorMessage: 'Error message expected Here.',
     errorInfo: '',
@@ -21,7 +22,26 @@ export default new Vuex.Store({
     articles: [],
     relatedArticles: [],
     readNews: [],
+    // readNews: JSON.parse(localStorage.getItem('readNews')),
     selectedHeadline: '',
+  },
+
+  getters: {
+    withBgImage: (state) => state.withBgImage,
+    withBgIndigo: (state) => state.withBgIndigo,
+    withBgDefault: (state) => state.withBgDefault,
+    selectedNews: (state) => state.selectedNews,
+    newsCategory: (state) => state.newsCategory,
+    isError: (state) => state.isError,
+    errorType: (state) => state.errorType,
+    isErrorLoading: (state) => state.isErrorLoading,
+    errorMessage: (state) => state.errorMessage,
+    errorInfo: (state) => state.errorInfo,
+    newsSources: (state) => state.newsSources,
+    articles: (state) => state.articles,
+    relatedArticles: (state) => state.relatedArticles,
+    readNews: (state) => state.readNews,
+    selectedHeadline: (state) => state.selectedHeadline,
   },
 
   mutations: {
@@ -42,11 +62,27 @@ export default new Vuex.Store({
     },
 
     SET_READ_NEWS(state, data) {
+      if (localStorage.getItem('readNews')) {
+        try {
+          state.readNews = JSON.parse(localStorage.getItem('readNews'));
+        } catch (e) {
+          localStorage.removeItem('readNews');
+        }
+      }
+
       state.readNews.unshift(data);
+    },
+
+    DELETE_READ_NEWS(state) {
+      state.readNews = [];
     },
 
     SET_ERROR_STATE(state, bool) {
       state.isError = bool;
+    },
+
+    SET_ERROR_TYPE(state, string) {
+      state.errorType = string;
     },
 
     SET_ERROR_LOADING(state, bool) {
@@ -73,7 +109,7 @@ export default new Vuex.Store({
       state.articles = articles;
     },
 
-    SET_TOP_HEADLINES_RELATED_ARTICLES(state, articles) {
+    SET_RELATED_ARTICLES(state, articles) {
       state.relatedArticles = articles;
     },
 
@@ -101,7 +137,21 @@ export default new Vuex.Store({
       commit('SET_WITH_BG_DEFAULT', cardArr.slice(b));
     },
 
-    // getRelatedArticles() {},
+    /* TODO: Reduce getSourceTopHealines, getTopHeadlines and getSearchArticles
+    **********as one if readabilty will not be lost.
+   */
+    // makeRequest(requestType, param1, param2, param3) {
+    //   switch (requestType)
+    // case ''
+    // },
+
+    getRelatedArticles({ state, commit }) {
+      const headlines = [...state.articles];
+
+      const removeIndex = headlines.map((item) => item.url).indexOf(state.selectedNews.url);
+      headlines.splice(removeIndex, 1);
+      commit('SET_RELATED_ARTICLES', headlines.slice(0, 5));
+    },
 
     errorStatus({ commit }, errorState) {
       let errorMessage = 'An error just occured!';
@@ -125,10 +175,18 @@ export default new Vuex.Store({
       commit('SET_ERROR_MESSAGE', errorMessage);
     },
 
-    updateSelectedNews({ commit, state }, article) {
+    updateSelectedNews({ commit, state, dispatch }, article) {
       commit('SET_SELECTED_NEWS', article);
+      // commit('SET_SELECTED_NEWS_INDEX', index);
+      // console.log(index);
       commit('SET_SELECTED_HEADLINE', state.selectedNews.title);
+      dispatch('getRelatedArticles');
+      // TODO: Local storage to retrieve history
       commit('SET_READ_NEWS', article);
+
+      // Backup to local storage
+      const parsed = JSON.stringify(state.readNews);
+      localStorage.setItem('readNews', parsed);
     },
 
     updateSelectedHeadline({ commit }, newHeadline) {
@@ -213,13 +271,15 @@ export default new Vuex.Store({
 
     async getSearchArticle({ commit, dispatch }, keyword) {
       try {
+        // Different api request
         const response = await api.searchArticle(keyword);
-        // console.log(response);
 
+        // Common
         if ([200, 201].includes(response.status)) {
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
         }
+        // Common
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
         commit('SET_ERROR_INFO', 'Unable to load top headlines.');
@@ -227,27 +287,25 @@ export default new Vuex.Store({
         commit('SET_ERROR_STATE', true);
       }
 
+      // Common
       setTimeout(() => {
         commit('SET_ERROR_STATE', false);
       }, 5000);
     },
-  },
 
-  getters: {
-    withBgImage: (state) => state.withBgImage,
-    withBgIndigo: (state) => state.withBgIndigo,
-    withBgDefault: (state) => state.withBgDefault,
-    selectedNews: (state) => state.selectedNews,
-    newsCategory: (state) => state.newsCategory,
-    isError: (state) => state.isError,
-    isErrorLoading: (state) => state.isErrorLoading,
-    errorMessage: (state) => state.errorMessage,
-    errorInfo: (state) => state.errorInfo,
-    newsSources: (state) => state.newsSources,
-    articles: (state) => state.articles,
-    relatedArticles: (state) => state.relatedArticles,
-    readNews: (state) => state.readNews,
-    selectedHeadline: (state) => state.selectedHeadline,
+    featureNotAvailable({ commit }) {
+      commit('SET_ERROR_TYPE', 'warning');
+      commit('SET_ERROR_STATE', true);
+      commit('SET_ERROR_MESSAGE', 'Feature Presently not available');
+
+      setTimeout(() => {
+        commit('SET_ERROR_STATE', false);
+      }, 5000);
+    },
+
+    emptyHistory({ commit }) {
+      commit('DELETE_READ_NEWS');
+    },
   },
 
   modules: {

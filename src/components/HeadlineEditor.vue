@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'HeadlineEditor',
 
@@ -97,7 +99,7 @@ export default {
       } else if (this.headline.length > this.allowedChar) {
         this.message = 'Unable to proceed with request due to length of text.';
       } else {
-        this.$store.dispatch('updateSelectedHeadline', this.headline);
+        this.updateSelectedHeadline(this.headline);
         this.isEditing = !this.isEditing;
         this.hasSaved = true;
         this.message = 'The headline has been updated';
@@ -106,6 +108,8 @@ export default {
         }, 600);
       }
     },
+
+    ...mapActions(['updateSelectedHeadline']),
   },
 };
 </script>

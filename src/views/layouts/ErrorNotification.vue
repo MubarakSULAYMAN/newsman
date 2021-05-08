@@ -1,16 +1,16 @@
 <template>
-<!-- TODO: Consider using errorInfo to have a more concise and precise notofocation. -->
+  <!-- TODO: Consider using errorInfo to have a more concise and precise notofocation. -->
   <v-alert
     :value="isError"
     border="left"
     dismissible
     elevation="24"
     prominent
-    type="error"
+    :type="errorType"
     transition="fab-transition"
     class="error-notification"
   >
-    {{ errorInfo }} <br />
+    {{ errorInfo }} <br v-if="notEmpty" />
     {{ errorMessage }}
   </v-alert>
 </template>
@@ -22,7 +22,11 @@ export default {
   name: 'ErrorNotification',
 
   computed: {
-    ...mapGetters(['isError', 'errorMessage', 'errorInfo']),
+    notEmpty() {
+      return this.errorInfo !== '' && this.errorMessage !== '';
+    },
+
+    ...mapGetters(['isError', 'errorType', 'errorMessage', 'errorInfo']),
   },
 };
 </script>

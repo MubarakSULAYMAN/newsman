@@ -62,14 +62,14 @@ export default {
 
   methods: {
     getSourceTopHeadlines(source) {
-      return this.$store.dispatch('getSourceTopHeadlines', source);
+      return this.getSourceTopHeadlines(source);
     },
 
     ...mapActions(['getNewsSources', 'getSourceTopHeadlines']),
   },
 
   created() {
-    return this.$store.dispatch('getNewsSources');
+    return this.getNewsSources();
   },
 };
 </script>

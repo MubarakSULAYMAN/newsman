@@ -33,7 +33,7 @@ export default {
 
   methods: {
     simulateError() {
-      return this.$store.dispatch('simulateErrorState');
+      return this.simulateErrorState();
     },
 
     ...mapActions(['simulateErrorState']),

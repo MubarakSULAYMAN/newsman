@@ -49,6 +49,7 @@ Vue.mixin({
 
       this.$router.push(`/news/${url}`);
       this.$store.dispatch('updateSelectedNews', article);
+      // this.$store.dispatch('getRelatedArticles');
     },
   },
 });

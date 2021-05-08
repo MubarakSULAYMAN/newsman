@@ -1,38 +1,49 @@
 <template>
-  <v-container fluid class="pa-0" v-if="articles.length > 0">
-    <v-card
-      v-for="(article, index) in articles"
-      :key="index"
-      class="related-headline mb-6"
-      dark
-    >
-      <div class="d-flex flex-column flex-no-wrap justify-space-between">
-        <v-img
-          :src="article.urlToImage"
-          max-height="125"
-          :max-width="avatarSize()"
-          class="mt-2 mx-auto"
-        ></v-img>
+  <v-container fluid class="pa-0">
+    <template v-if="relatedArticles.length === 0">
+      <h5 class="headline indigo--text text--darken-1 font-weight-light">
+        Currently unable to get other Trending News.
+      </h5>
+    </template>
 
-        <div>
-          <v-card-subtitle class="headline subtitle-1">
-            {{ article.title }}
-          </v-card-subtitle>
+    <template v-else>
+      <h5 class="mb-2 body-1 indigo--text text--darken-1 font-weight-black">Also read...</h5>
 
-          <v-card-actions>
-            <v-btn
-              class="button ml-2 mt-5"
-              outlined
-              rounded
-              small
-              @click="openNews(article.title, article)"
-            >
-              Read Now
-            </v-btn>
-          </v-card-actions>
+      <v-card
+        v-for="(article) in relatedArticles"
+        :key="article.url"
+        class="related-headline mb-6"
+        dark
+      >
+        <div class="d-flex flex-row flex-md-column flex-no-wrap justify-space-between">
+          <v-img
+            :src="article.urlToImage"
+            :alt="article.title"
+            max-height="125"
+            :max-width="avatarSize"
+            class="ml-2 ml-md-0 mb-2 mb-md-0 mt-2 mx-auto"
+          ></v-img>
+
+          <div>
+            <v-card-subtitle class="headline subtitle-1">
+              {{ article.title }}
+            </v-card-subtitle>
+
+            <v-card-actions>
+              <v-btn
+                class="button ml-2"
+                outlined
+                rounded
+                small
+                @click="openNews(article.title, article)"
+              >
+                Read Now
+              </v-btn>
+            </v-card-actions>
+          </div>
         </div>
-      </div>
-    </v-card>
+      </v-card>
+    </template>
   </v-container>
 </template>
 
@@ -42,7 +53,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'RelatedHeadlines',
 
-  methods: {
+  computed: {
     avatarSize() {
       let newSize;
 
@@ -50,23 +61,14 @@ export default {
         newSize = 300;
       } else if (this.$vuetify.breakpoint.name === 'lg') {
         newSize = 250;
-      } else if (this.$vuetify.breakpoint.name === 'lg') {
+      } else if (this.$vuetify.breakpoint.name === 'md') {
         newSize = 200;
       } else newSize = 180;
 
       return newSize;
     },
-  },
 
-  computed: {
-    /* TODO: Improves related articles with lodash(cdn) shuffle
-     *********splice out the selected news to return better results
-     */
-    articles() {
-      return this.articles.slice(0, 7);
-    },
-
-    ...mapGetters(['articles']),
+    ...mapGetters(['relatedArticles']),
   },
 };
 </script>

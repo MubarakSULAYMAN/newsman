@@ -15,8 +15,6 @@
 
       <v-spacer></v-spacer>
 
-      <!-- TODO: Add search on keyup functionality with rebounce function -->
-      <!-- @input="isTyping = true" -->
       <v-text-field
         class="mx-4"
         flat
@@ -52,6 +50,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import TheFooter from '@/views/layouts/TheFooter.vue';
 import NewsHeadlinesHistory from '@/views/layouts/NewsHeadlinesHistory.vue';
 import ErrorSimulator from '@/views/layouts/ErrorSimulator.vue';
@@ -87,18 +86,6 @@ export default {
     },
   },
 
-  watch: {
-    // searchQuery: _.debounce(() => {
-    //   this.isTyping = false;
-    // }, 1000),
-
-    isTyping(value) {
-      if (!value) {
-        this.searchUser(this.searchQuery);
-      }
-    },
-  },
-
   methods: {
     goHome() {
       if (this.$router.currentRoute.path !== '') {
@@ -127,23 +114,23 @@ export default {
       this.fab = top > 20 && !bottom;
     },
 
-    // searchUser(searchQuery) {
-    // this.isLoading = true;
-    //   // axios.get(`https://api.github.com/search/users?q=${searchQuery}`)
-    //   //   .then((response) => {
-    //   //   this.isLoading = false;
-    //   //     this.searchResult = response.data.items;
-    //   //   });
-    // },
-
     getArticle(keyword) {
       if (keyword) {
         clearTimeout(this.debounce);
         this.debounce = setTimeout(() => {
-          this.$store.dispatch('getSearchArticle', keyword);
+          this.getSearchArticle(keyword);
         }, 600);
       }
+
+      // alert(this.$router.fullPath);
+
+      if (this.$router.fullPath !== '') {
+        this.featureNotAvailable();
+        // this. $router.currentRoute.path;
+      }
     },
+
+    ...mapActions(['getSearchArticle', 'featureNotAvailable']),
   },
 };
 </script>

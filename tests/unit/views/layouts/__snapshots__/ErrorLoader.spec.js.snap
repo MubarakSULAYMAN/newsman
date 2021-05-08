@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Error Noification It displays "" for errorInfo and "Error message expected Here." for errorMessage. 1`] = `
+<div class="container error-loader rounded-lg elevation-24">
+  <div class="row fill-height justify-center align-content-center">
+    <div class="subtitle-1 text-center col col-12">
+      Getting your request done
+    </div>
+    <div class="col col-6">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--rounded theme--light" style="height: 6px;">
+        <div class="v-progress-linear__background indigo accent-4" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+        <div class="v-progress-linear__buffer"></div>
+        <transition-stub name="fade-transition">
+          <div class="v-progress-linear__indeterminate v-progress-linear__indeterminate--active">
+            <div class="v-progress-linear__indeterminate long indigo accent-4"></div>
+            <div class="v-progress-linear__indeterminate short indigo accent-4"></div>
+          </div>
+        </transition-stub>
+      </div>
+    </div>
+  </div>
+</div>
+`;

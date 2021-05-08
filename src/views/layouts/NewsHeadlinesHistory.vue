@@ -40,7 +40,7 @@
 
         <v-list-item v-if="readNews.length === 0">
           <v-subheader class="body-1 red--text text--darken-4 font-weight-bold">
-            No history
+            No history available
           </v-subheader>
         </v-list-item>
 
@@ -48,7 +48,7 @@
           v-else
           v-for="article in readNews"
           :key="article.title"
-          @click="sheet = false"
+          @click="featureNotAvailable"
         >
           <v-row class="">
             <!-- <v-col cols="1">
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'NewsHeadlinesHistory',
@@ -80,15 +80,27 @@ export default {
     };
   },
 
-  methods: {
-    emptyHistory() {
-      this.readNews.length = 0;
-    },
-  },
-
   computed: {
     ...mapGetters(['readNews']),
   },
+
+  methods: {
+    ...mapActions(['featureNotAvailable', 'emptyHistory']),
+  },
+
+  // mounted() {
+  //   if (localStorage.getItem('readNews')) {
+  //     try {
+  //       this.readNews = JSON.parse(localStorage.getItem('readNews'));
+  //     } catch (e) {
+  //       localStorage.removeItem('readNews');
+  //     }
+  //   }
+  // },
+
+  // created() {
+  //   this.$store.commit('SET_READ_NEWS');
+  // },
 };
 </script>
 

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Error Noification It displays "" for errorInfo and "Error message expected Here." for errorMessage. 1`] = `
+<transition-stub name="fab-transition" class="error-notification">
+  <div role="alert" class="v-alert v-sheet theme--dark elevation-24 v-alert--border v-alert--prominent v-alert--border-left error">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark"></i>
+      <div class="v-alert__content">
+        () =&gt; '' <br>
+        () =&gt; 'Error message expected Here.'
+      </div>
+      <div class="v-alert__border v-alert__border--left"></div><button type="button" class="v-alert__dismissible v-btn v-btn--icon v-btn--round theme--dark v-size--small" aria-label="Close"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close-circle theme--dark"></i></span></button>
+    </div>
+  </div>
+</transition-stub>
+`;

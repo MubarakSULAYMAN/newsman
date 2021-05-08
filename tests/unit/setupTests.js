@@ -1,9 +1,12 @@
 import Vue from 'vue';
-import Vuetify from 'vuetify/lib/framework';
+import Vuetify from 'vuetify';
+import { createLocalVue } from '@vue/test-utils';
 
 Vue.use(Vuetify);
+Vue.config.productionTip = false;
 
-export default new Vuetify({
+const localVue = createLocalVue();
+const vuetify = new Vuetify({
   theme: {
     themes: {
       light: {
@@ -21,3 +24,10 @@ export default new Vuetify({
     },
   },
 });
+
+localVue.use(vuetify);
+
+export default {
+  localVue,
+  vuetify,
+};
