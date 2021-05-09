@@ -11,80 +11,94 @@
       >
       to read news.
     </h5>
-    <v-card
-      fluid
-      class="selected-news mx-auto"
-      v-if="!isArticleEmpty(selectedNews)"
-    >
-      <v-img
-        class="news-image"
-        :src="selectedNews.urlToImage"
-        :alt="selectedNews.title"
-      ></v-img>
 
-      <v-card-title class="caption">{{ selectedHeadline }}</v-card-title>
+    <v-card fluid class="selected-news mx-auto">
+      <v-skeleton-loader
+        :loading="isNewsDetailsLoading"
+        transition="fade-transition"
+        height="300"
+        type="card-avatar"
+      >
+        <v-img
+          class="news-image"
+          :src="selectedNews.urlToImage"
+          :alt="selectedNews.title"
+          v-if="!isArticleEmpty(selectedNews)"
+        ></v-img>
+      </v-skeleton-loader>
 
-      <v-card-actions class="d-flex">
-        <v-card-title class="px-2 py-0">{{ selectedHeadline }}</v-card-title>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
+      <v-skeleton-loader
+        :loading="isNewsDetailsLoading"
+        transition-group="fade-transition"
+        height="200"
+        type="article"
+      >
+        <v-card-title class="caption">{{ selectedHeadline }}</v-card-title>
+
+        <v-card-actions class="d-flex">
+          <v-card-title class="px-2 py-0">{{ selectedHeadline }}</v-card-title>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class=""
+                outlined
+                x-small
+                fab
+                color="indigo"
+                v-bind="attrs"
+                v-on="on"
+                @click="overlay = !overlay"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <span>Edit headline, your way &#128521; &#129299;</span>
+          </v-tooltip>
+        </v-card-actions>
+
+        <v-overlay :value="overlay" opacity="0.7">
+          <headline-editor
+            @overlayStatus="overlay = !overlay"
+            class="headline-editor"
+          />
+        </v-overlay>
+
+        <v-card-text class="py-0">
+          <div class="subtitle-2 font-weight-light">
+            <span v-if="selectedNews.author === null">
+              {{ selectedNews.source.name }}
+            </span>
+            <span else>
+              {{ selectedNews.author }}
+            </span>
+            • {{ selectedNews.source.name }}
+          </div>
+          <div class="mb-4 subtitle-2 font-weight-light">
+            {{ selectedNews.publishedAt | dateFormat }}
+          </div>
+        </v-card-text>
+
+        <v-divider class="mx-4"></v-divider>
+
+        <v-card-text class="body-1 black--text">
+          <div>
+            <span v-html="selectedNews.content"></span>
+
             <v-btn
-              class=""
-              outlined
-              x-small
-              fab
-              color="indigo"
-              v-bind="attrs"
-              v-on="on"
-              @click="overlay = !overlay"
+              class="mx-4"
+              dark
+              icon
+              :href="selectedNews.url"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <v-icon>mdi-pencil</v-icon>
+              <v-icon size="24px" color="indigo darken-1"
+                >mdi-open-in-new</v-icon
+              >
             </v-btn>
-          </template>
-          <span>Edit headline, your way &#128521; &#129299;</span>
-        </v-tooltip>
-      </v-card-actions>
-
-      <v-overlay :value="overlay" opacity="0.7">
-        <headline-editor
-          @overlayStatus="overlay = !overlay"
-          class="headline-editor"
-        />
-      </v-overlay>
-
-      <v-card-text class="py-0">
-        <div class="subtitle-2 font-weight-light">
-          <span v-if="selectedNews.author === null">
-            {{ selectedNews.source.name }}
-          </span>
-          <span else>
-            {{ selectedNews.author }}
-          </span>
-          • {{ selectedNews.source.name }}
-        </div>
-        <div class="mb-4 subtitle-2 font-weight-light">
-          {{ selectedNews.publishedAt | dateFormat }}
-        </div>
-      </v-card-text>
-
-      <v-divider class="mx-4"></v-divider>
-
-      <v-card-text class="body-1 black--text">
-        <div>
-          <span v-html="selectedNews.content"></span>
-
-          <v-btn
-            class="mx-4"
-            dark
-            icon
-            :href="selectedNews.url"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <v-icon size="24px" color="indigo darken-1">mdi-open-in-new</v-icon>
-          </v-btn>
-        </div>
-      </v-card-text>
+          </div>
+        </v-card-text>
+      </v-skeleton-loader>
     </v-card>
   </v-container>
 </template>
@@ -105,7 +119,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['selectedNews', 'selectedHeadline']),
+    ...mapGetters(['isNewsDetailsLoading', 'selectedNews', 'selectedHeadline']),
   },
 
   methods: {

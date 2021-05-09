@@ -1,5 +1,4 @@
 <template>
- <!-- absolute -->
   <v-footer dark padless class="mt-12">
     <v-card class="flex" flat tile>
       <v-card-title class="indigo" dark>
@@ -19,9 +18,7 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          <!-- <a href="https://ng.linkedin.com › mubarak-sulayman-98052189" target="_blank" rel="noopener noreferrer"> -->
           <v-icon size="24px"> mdi-{{ icon.name }} </v-icon>
-          <!-- </a> -->
         </v-btn>
       </v-card-title>
 

@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: Consider using errorInfo to have a more concise and precise notofocation. -->
   <v-alert
     :value="isError"
     border="left"

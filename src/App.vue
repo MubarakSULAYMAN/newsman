@@ -122,11 +122,8 @@ export default {
         }, 600);
       }
 
-      // alert(this.$router.fullPath);
-
       if (this.$router.fullPath !== '') {
         this.featureNotAvailable();
-        // this. $router.currentRoute.path;
       }
     },
 

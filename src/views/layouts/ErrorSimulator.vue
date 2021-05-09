@@ -2,9 +2,6 @@
   <div class="">
     <v-tooltip right>
       <template v-slot:activator="{ on, attrs }">
-          <!-- fixed
-          bottom
-          right -->
         <v-btn
           elevation="2"
           fab

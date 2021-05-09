@@ -12,68 +12,74 @@
       >
         <v-hover>
           <template v-slot:default="{ hover }">
-            <v-card
-              height="350"
-              dark
-              :elevation="hover ? 12 : 3"
-              :style="backgroundImage(index, article.urlToImage)"
-              :class="[
-                hasBgColor(index),
-                cardProp(index) ? 'card' : '',
-                'd-flex flex-column',
-                'headline-card',
-              ]"
+            <v-skeleton-loader
+              :loading="isTopHeadlinesLoading"
+              transition="scale-transition"
+              height="94"
+              type="card"
             >
-              <v-card-title class="mb-auto">
-                <v-spacer></v-spacer>
-                <v-icon
-                  :class="[
-                    'arrow-button',
-                    defaultProp(index) ? 'arrow-white' : 'arrow-indigo',
-                  ]"
-                  @click="openNews(article.title, article)"
-                >
-                  mdi-arrow-right
-                </v-icon>
-              </v-card-title>
-
-              <v-card-text class="text-area">
-                <v-row align="center" class="misc mx-0">
-                  <div :class="[defaultColor(index), 'font-weight-bold']">
-                    <span v-if="article.publishedAt !== null">
-                      {{ article.publishedAt | dateFormat }}
-                    </span>
-                    <span v-else>Unable to fetch Date</span>
-                  </div>
-                </v-row>
-
-                <h3
-                  :class="[
-                    customColor(index),
-                    'my-4 title font-weight-bold text-capitalize',
-                  ]"
-                >
-                  {{ article.title || 'Unable to fetch Title' }}
-                </h3>
-
-                <p
-                  :class="[defaultColor(index)]"
-                  v-if="!hasBgImage(index)"
-                >
-                <span v-if="article.content !== null"
-                v-html="articleContent(article.title, article.content)">
-                </span>
-                <span v-else>Unable to fetch News Content</span>
-                  <v-btn
-                    text
-                    :class="[customColor(index), 'text-capitalize']"
+              <v-card
+                height="350"
+                dark
+                :elevation="hover ? 12 : 3"
+                :style="backgroundImage(index, article.urlToImage)"
+                :class="[
+                  hasBgColor(index),
+                  cardProp(index) ? 'card' : '',
+                  'd-flex flex-column',
+                  'headline-card',
+                ]"
+              >
+                <v-card-title class="mb-auto">
+                  <v-spacer></v-spacer>
+                  <v-icon
+                    :class="[
+                      'arrow-button',
+                      defaultProp(index) ? 'arrow-white' : 'arrow-indigo',
+                    ]"
                     @click="openNews(article.title, article)"
                   >
-                    Read More
-                  </v-btn>
-                </p>
-              </v-card-text>
-            </v-card>
+                    mdi-arrow-right
+                  </v-icon>
+                </v-card-title>
+
+                <v-card-text class="text-area">
+                  <v-row align="center" class="misc mx-0">
+                    <div :class="[defaultColor(index), 'font-weight-bold']">
+                      <span v-if="article.publishedAt !== null">
+                        {{ article.publishedAt | dateFormat }}
+                      </span>
+                      <span v-else>Unable to fetch Date</span>
+                    </div>
+                  </v-row>
+
+                  <h3
+                    :class="[
+                      customColor(index),
+                      'my-4 title font-weight-bold text-capitalize',
+                    ]"
+                  >
+                    {{ article.title || 'Unable to fetch Title' }}
+                  </h3>
+
+                  <p :class="[defaultColor(index)]" v-if="!hasBgImage(index)">
+                    <span
+                      v-if="article.content !== null"
+                      v-html="articleContent(article.title, article.content)"
+                    >
+                    </span>
+                    <span v-else>Unable to fetch News Content</span>
+                    <v-btn
+                      text
+                      :class="[customColor(index), 'text-capitalize']"
+                      @click="openNews(article.title, article)"
+                    >
+                      Read More
+                    </v-btn>
+                  </p>
+                </v-card-text>
+              </v-card>
+            </v-skeleton-loader>
           </template>
         </v-hover>
       </v-col>
@@ -83,8 +89,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-// import dayjs from 'dayjs';
-// import { relativeTime, LocalizedFormat } from 'dayjs/plugin/relativeTime';
 
 export default {
   name: 'NewsHeadlines',
@@ -96,31 +100,13 @@ export default {
   },
 
   computed: {
-    // diplayClass() {
-    //   let classString = '';
-    //   switch (this.$vuetify.breakpoint.name) {
-    //     case 'xs':
-    //       classString = 'headline';
-    //       break;
-    //     case 'sm':
-    //       classString = 'display-1';
-    //       break;
-    //     case 'md':
-    //       classString = 'display-2';
-    //       break;
-    //     case 'lg':
-    //       classString = 'display-3';
-    //       break;
-    //     case 'xl':
-    //       classString = 'display-4';
-    //       break;
-    //     default:
-    //       classString = 'heading';
-    //   }
-    //   return classString;
-    // },
-
-    ...mapGetters(['articles', 'withBgImage', 'withBgIndigo', 'withBgDefault']),
+    ...mapGetters([
+      'isTopHeadlinesLoading',
+      'articles',
+      'withBgImage',
+      'withBgIndigo',
+      'withBgDefault',
+    ]),
   },
 
   methods: {
@@ -199,7 +185,6 @@ export default {
 
 <style scoped>
 .card {
-  /* background: center no-repeat cover; */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -210,7 +195,6 @@ export default {
   border: 1px solid none;
 }
 
-/* TODO: Replace with border image with radius */
 .headline-card:hover {
   border-top-color: #304ffe;
   border-right-color: #5c6bc0;

@@ -18,14 +18,21 @@
     </template>
 
     <v-list style="max-height: 300px" class="overflow-y-auto">
-      <v-list-item
-        v-for="source in newsSources"
-        :key="source.id"
-        link
-        @click="getSourceTopHeadlines(source.id)"
+        <v-list-item
+          v-for="source in newsSources"
+          :key="source.id"
+          link
+          @click="getSourceTopHeadlines(source.id)"
+        >
+      <v-skeleton-loader
+        :loading="isSourcesLoading"
+        transition-group="scale-transition"
+        height="94"
+        type="list-item"
       >
-        <v-list-item-title>{{ source.name }}</v-list-item-title>
-      </v-list-item>
+          <v-list-item-title>{{ source.name }}</v-list-item-title>
+      </v-skeleton-loader>
+        </v-list-item>
     </v-list>
 
     <!-- FIXME: Width not customizable with virtual scroll -->
@@ -57,7 +64,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['newsSources']),
+    ...mapGetters(['isSourcesLoading', 'newsSources']),
   },
 
   methods: {

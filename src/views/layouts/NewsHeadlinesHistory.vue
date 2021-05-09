@@ -4,9 +4,6 @@
       <!-- FIXME: Tooltip compatibity with v-sheet -->
       <!-- <v-tooltip right> -->
       <template v-slot:activator="{ on, attrs }">
-        <!-- fixed
-          bottom
-          left -->
         <v-btn
           elevation="2"
           fab
@@ -51,9 +48,6 @@
           @click="featureNotAvailable"
         >
           <v-row class="">
-            <!-- <v-col cols="1">
-              <v-list-item-title>Time</v-list-item-title>
-            </v-col> -->
             <v-col cols="11">
               <v-list-item-title
                 >{{ article.title }} •
@@ -61,7 +55,6 @@
               >
             </v-col>
           </v-row>
-          <!-- </v-container> -->
         </v-list-item>
       </v-list>
     </v-bottom-sheet>
@@ -87,20 +80,6 @@ export default {
   methods: {
     ...mapActions(['featureNotAvailable', 'emptyHistory']),
   },
-
-  // mounted() {
-  //   if (localStorage.getItem('readNews')) {
-  //     try {
-  //       this.readNews = JSON.parse(localStorage.getItem('readNews'));
-  //     } catch (e) {
-  //       localStorage.removeItem('readNews');
-  //     }
-  //   }
-  // },
-
-  // created() {
-  //   this.$store.commit('SET_READ_NEWS');
-  // },
 };
 </script>
 

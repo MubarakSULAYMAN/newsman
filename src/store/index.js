@@ -12,9 +12,13 @@ export default new Vuex.Store({
     withBgIndigo: [],
     withBgDefault: [],
     selectedNews: {},
+    isSourcesLoading: true,
+    isTopHeadlinesLoading: true,
+    isNewsDetailsLoading: true,
+    isTrendingLoading: true,
     isError: false,
     errorType: 'error',
-    isErrorLoading: false,
+    isErrorisLoading: false,
     errorMessage: 'Error message expected Here.',
     errorInfo: '',
     newsSources: [],
@@ -31,7 +35,10 @@ export default new Vuex.Store({
     withBgIndigo: (state) => state.withBgIndigo,
     withBgDefault: (state) => state.withBgDefault,
     selectedNews: (state) => state.selectedNews,
-    newsCategory: (state) => state.newsCategory,
+    isSourcesLoading: (state) => state.isSourcesLoading,
+    isTopHeadlinesLoading: (state) => state.isTopHeadlinesLoading,
+    isNewsDetailsLoading: (state) => state.isNewsDetailsLoading,
+    isTrendingLoading: (state) => state.isTrendingLoading,
     isError: (state) => state.isError,
     errorType: (state) => state.errorType,
     isErrorLoading: (state) => state.isErrorLoading,
@@ -62,19 +69,35 @@ export default new Vuex.Store({
     },
 
     SET_READ_NEWS(state, data) {
-      if (localStorage.getItem('readNews')) {
-        try {
-          state.readNews = JSON.parse(localStorage.getItem('readNews'));
-        } catch (e) {
-          localStorage.removeItem('readNews');
-        }
-      }
+      // if (localStorage.getItem('readNews')) {
+      //   try {
+      //     state.readNews = JSON.parse(localStorage.getItem('readNews'));
+      //   } catch (e) {
+      //     localStorage.removeItem('readNews');
+      //   }
+      // }
 
       state.readNews.unshift(data);
     },
 
     DELETE_READ_NEWS(state) {
       state.readNews = [];
+    },
+
+    SET_NEWS_SOURCES_LOADING_STATE(state, bool) {
+      state.isSourcesLoading = bool;
+    },
+
+    SET_TOP_HEADLINES_LOADING_STATE(state, bool) {
+      state.isTopHeadlinesLoading = bool;
+    },
+
+    SET_NEWS_DETAILS_LOADING_STATE(state, bool) {
+      state.isNewsDetailsLoading = bool;
+    },
+
+    SET_TRENDING_LOADING_STATE(state, bool) {
+      state.isTrendingLoading = bool;
     },
 
     SET_ERROR_STATE(state, bool) {
@@ -183,10 +206,14 @@ export default new Vuex.Store({
       dispatch('getRelatedArticles');
       // TODO: Local storage to retrieve history
       commit('SET_READ_NEWS', article);
+      setTimeout(() => {
+        commit('SET_NEWS_DETAILS_LOADING_STATE', false);
+        commit('SET_TRENDING_LOADING_STATE', false);
+      }, 2000);
 
       // Backup to local storage
-      const parsed = JSON.stringify(state.readNews);
-      localStorage.setItem('readNews', parsed);
+      // const parsed = JSON.stringify(state.readNews);
+      // localStorage.setItem('readNews', parsed);
     },
 
     updateSelectedHeadline({ commit }, newHeadline) {
@@ -214,6 +241,7 @@ export default new Vuex.Store({
 
         if ([200, 201].includes(response.status)) {
           commit('SET_NEWS_SOURCES', response.data.sources);
+          commit('SET_NEWS_SOURCES_LOADING_STATE', false);
         }
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
@@ -232,10 +260,10 @@ export default new Vuex.Store({
         const response = await api.getSourceTopHeadlines(source);
 
         if ([200, 201].includes(response.status)) {
-          // commit('SET_SOURCE_TOP_HEADLINES', response.data.sources);
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
           await dispatch('getNewsSources');
+          commit('SET_TOP_HEADLINES_LOADING_STATE', false);
         }
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
@@ -256,6 +284,7 @@ export default new Vuex.Store({
         if ([200, 201].includes(response.status)) {
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
+          commit('SET_TOP_HEADLINES_LOADING_STATE', false);
         }
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
@@ -278,6 +307,7 @@ export default new Vuex.Store({
         if ([200, 201].includes(response.status)) {
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
+          commit('SET_TOP_HEADLINES_LOADING_STATE', false);
         }
         // Common
       } catch (e) {
