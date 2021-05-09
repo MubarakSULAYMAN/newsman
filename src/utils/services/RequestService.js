@@ -8,8 +8,8 @@ const apiClient = axios.create({
   withCredentials: false,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://news-man.netlify.app/, https://newsapi.org/v2/',
-    method: 'GET',
+    // 'Access-Control-Allow-Origin': 'https://news-man.netlify.app/, https://newsapi.org/v2/',
+    // method: 'GET',
   },
 });
 
