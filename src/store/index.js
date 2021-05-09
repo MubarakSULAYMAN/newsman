@@ -263,7 +263,9 @@ export default new Vuex.Store({
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
           await dispatch('getNewsSources');
-          commit('SET_TOP_HEADLINES_LOADING_STATE', false);
+          setTimeout(() => {
+            commit('SET_TOP_HEADLINES_LOADING_STATE', false);
+          }, 1000);
         }
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
@@ -284,7 +286,9 @@ export default new Vuex.Store({
         if ([200, 201].includes(response.status)) {
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
-          commit('SET_TOP_HEADLINES_LOADING_STATE', false);
+          setTimeout(() => {
+            commit('SET_TOP_HEADLINES_LOADING_STATE', false);
+          }, 1000);
         }
       } catch (e) {
         // TODO: Check if precise message is better than general error state message
@@ -307,7 +311,9 @@ export default new Vuex.Store({
         if ([200, 201].includes(response.status)) {
           commit('SET_TOP_HEADLINES_ARTICLES', response.data.articles);
           dispatch('getRandomInt');
-          commit('SET_TOP_HEADLINES_LOADING_STATE', false);
+          setTimeout(() => {
+            commit('SET_TOP_HEADLINES_LOADING_STATE', false);
+          }, 1000);
         }
         // Common
       } catch (e) {

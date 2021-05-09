@@ -15,7 +15,7 @@
             <v-skeleton-loader
               :loading="isTopHeadlinesLoading"
               transition="scale-transition"
-              height="94"
+              height="300"
               type="card"
             >
               <v-card
