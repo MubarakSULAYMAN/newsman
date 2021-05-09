@@ -4,7 +4,7 @@ A number one destination for latest, up-to-the-minute and historic news :newspap
 
 **`Newsman`** is built with vue, vuetify and lots love :heart: :sparkling_heart:, and deployed on netlify.
 
-Because of our believe in being progressive, we believe ths is just a work in progress :construction:. But, feel free to explore :ringed_planet: **[Newsman](https://newsman.netlify.app/)**, thank you friend.
+Because of our believe in being progressive, we believe ths is just a work in progress :construction:. But, feel free to explore :ringed_planet: **[Newsman](https://news-man.netlify.app/)**, thank you friend.
 
 <!-- Add Shields later -->
 <!-- [![Contributors][contributors-shield]][https://github.com/MubarakSULAYMAN/newsman/graphs/contributors]
@@ -25,7 +25,7 @@ Because of our believe in being progressive, we believe ths is just a work in pr
     <a href="https://github.com/MubarakSULAYMAN/newsman"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://newsman.netlify.app">View Demo</a>
+    <a href="https://news-man.netlify.app">View Demo</a>
     ·
     <a href="https://github.com/MubarakSULAYMAN/newsman/issues">Report Bug</a>
     ·
@@ -39,8 +39,6 @@ Because of our believe in being progressive, we believe ths is just a work in pr
 </details> -->
 
 ## Table of contents
-
----
 
 - [Project Title](#newsman)
 <!-- - [Demo-Preview](#demo-preview) -->
