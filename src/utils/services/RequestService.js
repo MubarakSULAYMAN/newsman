@@ -8,7 +8,7 @@ const apiClient = axios.create({
   withCredentials: false,
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': 'https://newsapi.org/v2',
+    'Access-Control-Allow-Origin': '*',
   },
 });
 
